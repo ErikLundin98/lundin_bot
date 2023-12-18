@@ -1,0 +1,19 @@
+get_weather: 
+  description: Get information about today's weather
+  active: True
+  number: 1
+toggle_light: 
+  description: Turn on or off a light in the home
+  active: True
+  number: 2
+ask_question: 
+  description: |
+    A random question that needs to be answered. Choose this if 
+    no other action is appropriate
+  active: True
+  number: 3
+tell_joke:
+  description: |
+    Tell a funny joke
+  active: True
+  number: 4

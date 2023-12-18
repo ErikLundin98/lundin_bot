@@ -1,0 +1,10 @@
+platform: mac
+language: swedish
+
+speech_to_text:
+    whisper_model: small
+    wake_word: "Hej Lundin"
+    similarity_score: 0.75
+    phrase_timeout: 2
+    record_timeout: 2
+    energy_threshold: 1000
