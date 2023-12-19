@@ -22,12 +22,11 @@ def main(config: Box):
             ):
                 print("is wake word")
         
-                # action = select_action.main(transcription)
-                # print(action)
+                action = select_action.main(transcription)
+                print(action)
 
 if __name__ == "__main__":
     with open("config.yaml", "r") as file:
         config = Box(yaml.safe_load(file))
-
     main(config=config)
 

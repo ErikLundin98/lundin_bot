@@ -1,5 +1,7 @@
 # Training a TTS bot using tts
 
+https://www.youtube.com/watch?v=b_we_jma220&t=146s
+
 * Using coqui tts
 * Create own dataset following this: https://docs.coqui.ai/en/latest/formatting_your_dataset.html#formatting-your-dataset
 
