@@ -13,3 +13,11 @@ https://www.youtube.com/watch?v=b_we_jma220&t=146s
 OR
 
 https://github.com/Enforcer03/voice-cloning/blob/main/run_cloning.py
+
+
+2023-12-19:
+
+Using model in
+/Users/lundinerik/Library/Application Support/tts/tts_models--sv--cv--vits
+
+Edit json there: 
