@@ -1,19 +1,23 @@
+no_action: 
+  description: Null action, should never be selected.
+  active: True
+  number: 1
 get_weather: 
   description: Get information about today's weather
   active: True
-  number: 1
+  number: 2
 toggle_light: 
   description: Turn on or off a light in the home
   active: True
-  number: 2
-ask_question: 
+  number: 3
+answer_question: 
   description: |
     A random question that needs to be answered. Choose this if 
     no other action is appropriate
   active: True
-  number: 3
+  number: 4
 tell_joke:
   description: |
     Tell a funny joke
   active: True
-  number: 4
+  number: 5

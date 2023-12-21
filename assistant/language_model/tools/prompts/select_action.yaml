@@ -7,6 +7,19 @@ prompt: |
   The user will ask you with sometimes incorrect grammar, 
   and it's up to you to translate it into one of the actions. The actions that the 
   user can ask for are:
-  {actions}
+  {{ actions }}
 
-  Only respond with the number, nothing else. 
+  Your response should be valid json of the following format:
+  {
+    "action": "the number of the action to perform",
+    "message": "response to the user confirming that you will perform the action"
+  }
+
+  Example:
+  input: What is the current weather like?
+  output: {
+    "action": 1,
+    "message": "Let me look up the weather forecast for you so that we can find out!",
+  }
+
+  Only respond with valid JSON of the above format, nothing else.

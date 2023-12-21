@@ -1,14 +1,32 @@
-from assistant.language_model.utils import load_prompt
-from assistant.language_model.tools import Action
+import json
+from assistant.language_model.utils import answer_prompt, load_prompt, render_prompt
+from assistant.language_model.action import Action
+from openai import OpenAI
+from box import Box
+
 NAME = "select_action"
 ACTIONS = "actions"
 
-def main(query: str) -> Action:
+def main(
+    query: str, 
+    client: OpenAI,
+    config: Box,
+) -> tuple[Action, str]:
     """Select action."""
-    prompt = load_prompt(NAME).prompt
-    actions = load_prompt(ACTIONS)
-    prompt = prompt.format(
-        actions=actions
+    system_prompt = render_prompt(
+        prompt_name=NAME,
+        actions = load_prompt(ACTIONS)
     )
-    print(prompt)
-    return Action.ASK_QUESTION
+    answer = answer_prompt(
+        system_prompt=system_prompt,
+        user_prompt=query,
+        client=client,
+        model=config.language_model.model,
+    ).content
+    try:
+        answer_dict = json.loads(answer)
+    except json.JSONDecodeError as e:
+        print("Error when parsing json", e)
+        return Action.NO_ACTION, "I could not determine which action you want to perform"
+    
+    return answer_dict["action"], answer_dict["message"] 
