@@ -1,12 +1,36 @@
-platform: mac
-language: swedish
+platform: mac_amd
+# Choose platform in the following way:
+# If using M1 or M2 or M* Mac: mac_arm
+# If using mac with intel or amd cpu: mac_amd
+# If using RPI 4 or below: linux_arm32
+# If using RPI 5 or above: linux_arm64
+# If using linux with intel or amd cpu: linux_amd
+# If using windows: Currently not supported.
+language: se # Make sure this matches your tts model.
 
 speech_to_text:
     whisper_model: small
-    wake_word: "Hej Lundin"
+    wake_word: "Hej Erik"
     similarity_score: 0.75
     record_timeout: 5
     energy_threshold: 300
 
 language_model:
     model: gpt-3.5-turbo
+
+text_to_speech:
+    binary_path: bin # local path to where piper is downloaded
+    piper_tts_release_url: https://github.com/rhasspy/piper/releases/download/2023.11.14-2/
+    binary_download_files:
+        mac_arm: piper_macos_aarch64.tar.gz # If using amd64 cpu on mac, change this
+        mac_amd: piper_macos_x64.tar.gz
+        linux_arm32: piper_linux_armv7l.tar.gz
+        linux_arm64: piper_linux_aarch64.tar.gz
+        linux_amd: piper_linux_x86_64.tar.gz
+
+    piper_voice:
+        # You can find available voices at https://huggingface.co/rhasspy/piper-voices/tree/v1.0.0
+        # Or you can create your own :)
+        model_file_name: sv_SE-nst-medium.onnx
+        weights_url: https://huggingface.co/rhasspy/piper-voices/blob/v1.0.0/sv/sv_SE/nst/medium/sv_SE-nst-medium.onnx
+        config_url: https://huggingface.co/rhasspy/piper-voices/blob/v1.0.0/sv/sv_SE/nst/medium/sv_SE-nst-medium.onnx.json

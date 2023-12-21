@@ -2,13 +2,11 @@ from box import Box
 from openai import OpenAI
 from dotenv import load_dotenv
 import yaml
+from assistant.constants import OPENAI_API_KEY, OPENAI_ORGANIZATION
 from assistant.language_model.action import run_action
 from assistant.language_model.tools import select_action
 
 import os
-
-OPENAI_API_KEY = "OPENAI_API_KEY"
-OPENAI_ORGANIZATION = "OPENAI_ORGANIZATION"
 
 load_dotenv()
 
