@@ -1,3 +1,5 @@
+import os
+import signal
 from dotenv import load_dotenv
 import yaml
 from box import Box
@@ -10,14 +12,12 @@ from assistant.utils import contains_wake_word
 
 log_ = logging.getLogger(__name__)
 
-# TODO: Support message history?
 def main(config: Box):
     """Start voice assistant service."""
     transcriber = Transcriber(config=config)
     llm = LanguageModel(config=config)
     log_.info("Initialized transcriber, llm client.")
-    while True:
-        transcription = transcriber.get_transcription()
+    for transcription in transcriber.start():
         if transcription:   
             log_.info(f"Got transcription {transcription}.")
         if transcription and contains_wake_word(
@@ -43,9 +43,12 @@ def main(config: Box):
 
 
 if __name__ == "__main__":
+    pg_id = os.getpgrp()
     load_dotenv()
 
     with open("config.yaml", "r") as file:
         config = Box(yaml.safe_load(file))
-
-    main(config=config)
+    try:
+        main(config=config)
+    finally:
+        os.killpg(pg_id, signal.SIGKILL)

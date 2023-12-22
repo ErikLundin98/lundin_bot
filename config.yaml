@@ -11,9 +11,18 @@ language: swedish # Make sure this matches your tts model.
 speech_to_text:
     whisper_model: small
     wake_word: "Hej Erik"
+    # Deprecated
     similarity_score: 0.75
     record_timeout: 5
     energy_threshold: 300
+
+    whisper_cpp:
+        length: 15360
+        capture_device: 0 # capture device ID. Change if using other
+        n_threads: 2 # threads to use
+        audio_context_len: 512 # audio context size (0 - all)
+        vad_thold: 0.3 # voice activity detection threshold
+        file_path: ../data/transcription.txt # don't change this :)
 
 language_model:
     model: gpt-3.5-turbo

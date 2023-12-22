@@ -1,0 +1,9 @@
+openai
+python-dotenv
+python-box
+dirigera
+
+
+pyaudio
+SpeechRecognition # TODO: Might not be necessary
+numpy

@@ -1,60 +1,73 @@
+from typing import Generator
 from box import Box
-from queue import Queue
-import numpy as np
-import torch
-import whisper
-import time
-import speech_recognition as sr
+import subprocess
+import os
+import logging
 
+_log = logging.getLogger(__name__)
 
-class Transcriber():
-    """Transcriber class"""
+class Transcriber:
+    """Simple Whisper CPP model wrapper."""
 
+    TRANSCRIPTION_FILE_PATH = "..data/transcription.txt"
     def __init__(self, config: Box):
-        self.phrase_time = None
-        self.data_queue = Queue()
-        self.recorder = sr.Recognizer()
-        self.recorder.energy_threshold = config.speech_to_text.energy_threshold
-        self.recorder.dynamic_energy_threshold = False
+        """Initialize Whisper CPP model."""
+        cpp_config = config.speech_to_text.whisper_cpp
+        self.length = cpp_config.length
+        self.capture_device = cpp_config.capture_device
+        self.n_threads = cpp_config.n_threads
+        self.audio_context_len = cpp_config.audio_context_len
+        self.vad_thold = cpp_config.vad_thold
+        self.file_path = cpp_config.file_path
+        self.last_transcription = None
+
+    def start(self) -> Generator[str | None, None, None]:
+        """Start transcription in subprocess, return transcriptions as generator."""
+        stream_cmd = [
+            "./stream",
+            "-m", "models/ggml-small.bin",
+            "--step", "0",
+            "--language", "swedish",
+            "--length", f"{self.length}",
+            "--capture", f"{self.capture_device}",
+            "--threads", f"{self.n_threads}",
+            "--audio-ctx", f"{self.audio_context_len}", 
+            "--vad-thold", f"{self.vad_thold}",
+            "--file", f"{self.file_path}", # TODO remove?
+            "--save-audio",
+            # "--keep", '0'
+        ]
+        _log.info(f"Running command {' '.join(stream_cmd)}")
+
+        log_file = open("data/transcription_error_log.txt", "a")
+        self._p = subprocess.Popen(
+            args=stream_cmd,
+            cwd=os.path.join(os.getcwd(), "whisper.cpp"),
+            stdout=subprocess.PIPE,
+            stderr=log_file,
+            shell=False,
+            encoding="utf8"
+        )
+        for line in iter(self._p.stdout.readline, ""):
+            if line[0] == "[":
+                self.last_transcription = line.split("]")[-1].strip()
+            if "###" in line and "END" in line:
+                _log.info(f"Got sentence {self.last_transcription}")
+                yield self.last_transcription
+            yield None
+
+
+if __name__ == "__main__":
+    import signal
+    import yaml
+    pg_id = os.getpgrp()
+    with open("config.yaml", "r") as file:
+        config = Box(yaml.safe_load(file))
+        
+    model = Transcriber(config)
+    try:
+        for line in model.start_transcribing():
+            print(line)
     
-        self.source = sr.Microphone(device_index=0, sample_rate=16000)
-
-
-        self.audio_model = whisper.load_model(config.speech_to_text.whisper_model)
-
-        self.record_timeout = config.speech_to_text.record_timeout # how "real time" the recording is.
-        self.transcription = ['']
-        self.language = config.language
-
-        with self.source:
-            self.recorder.adjust_for_ambient_noise(self.source)
-
-        def record_callback(_, audio: sr.AudioData) -> None:
-            """
-            Threaded callback function to receive audio data when recordings finish.
-            audio: An AudioData containing the recorded bytes.
-            """
-            # Grab the raw bytes and push it into the thread safe queue.
-            data = audio.get_raw_data()
-            self.data_queue.put(data)
-
-        self.recorder.listen_in_background(self.source, record_callback, phrase_time_limit=self.record_timeout)
-
-    def get_transcription(self) -> str | None:
-        if not self.data_queue.empty():
-            audio_data = b''.join(self.data_queue.queue)
-            self.data_queue.queue.clear()
-            
-            # Convert in-ram buffer to something the model can use directly without needing a temp file.
-            # Convert data from 16 bit wide integers to floating point with a width of 32 bits.
-            # Clamp the audio stream frequency to a PCM wavelength compatible default of 32768hz max.
-            audio_np = np.frombuffer(audio_data, dtype=np.int16).astype(np.float32) / 32768.0
-
-            # Read the transcription.
-            result = self.audio_model.transcribe(audio_np, fp16=torch.cuda.is_available(), language=self.language)
-            text = result['text'].strip()
-            return text
-            
-        time.sleep(0.25)    
-        return None
-            
+    finally:
+        os.killpg(pg_id, signal.SIGKILL)

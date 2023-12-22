@@ -3,6 +3,8 @@ import dirigera
 from dirigera.devices.light import Light
 import os
 
+from assistant.constants import DIRIGERA_IP, DIRIGERA_TOKEN
+
 load_dotenv()
 
 hub = dirigera.Hub(
