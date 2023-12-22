@@ -1,6 +1,4 @@
 from box import Box
-from openai import OpenAI
-from openai.types.chat import ChatCompletionMessage
 import yaml
 import os
 from jinja2 import Template
@@ -19,27 +17,6 @@ def load_prompt(prompt_name: str) -> Box:
     ) as file:
         return Box(yaml.safe_load(file))
 
-
-def answer_prompt(
-    system_prompt: str,
-    user_prompt: str,
-    client: OpenAI,
-    model: str,
-) -> ChatCompletionMessage:
-    """Answer prompt."""
-    completion = client.chat.completions.create(
-        model=model,
-        messages=[
-            {
-                "role": "system",
-                "content": system_prompt
-                if system_prompt
-                else "You are a helpful assistant",
-            },
-            {"role": "user", "content": user_prompt},
-        ],
-    )
-    return completion.choices[0].message
 
 def render_prompt(
     prompt_name: str,

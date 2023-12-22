@@ -6,7 +6,7 @@ platform: mac_amd
 # If using RPI 5 or above: linux_arm64
 # If using linux with intel or amd cpu: linux_amd
 # If using windows: Currently not supported.
-language: se # Make sure this matches your tts model.
+language: swedish # Make sure this matches your tts model.
 
 speech_to_text:
     whisper_model: small
@@ -17,6 +17,7 @@ speech_to_text:
 
 language_model:
     model: gpt-3.5-turbo
+    extra_instructions: Always answer in Swedish.
 
 text_to_speech:
     binary_path: bin # local path to where piper is downloaded
@@ -34,3 +35,13 @@ text_to_speech:
         model_file_name: sv_SE-nst-medium.onnx
         weights_url: https://huggingface.co/rhasspy/piper-voices/blob/v1.0.0/sv/sv_SE/nst/medium/sv_SE-nst-medium.onnx
         config_url: https://huggingface.co/rhasspy/piper-voices/blob/v1.0.0/sv/sv_SE/nst/medium/sv_SE-nst-medium.onnx.json
+
+smart_home:
+    dirigera:
+        rooms:
+            - entrance
+            - office
+            - kitchen
+            - bedroom
+            - living room
+            - hallway

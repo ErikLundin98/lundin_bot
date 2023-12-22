@@ -1,25 +1,20 @@
 from dotenv import load_dotenv
-import os
 import yaml
 from box import Box
-from assistant.constants import OPENAI_API_KEY, OPENAI_ORGANIZATION
 from assistant.language_model.action import run_action
+from assistant.language_model.model import LanguageModel
 from assistant.language_model.tools import select_action
 from assistant.speech_to_text.model import Transcriber
-from openai import OpenAI
 import logging
-import sys
 from assistant.utils import contains_wake_word
 
 log_ = logging.getLogger(__name__)
 
+# TODO: Support message history?
 def main(config: Box):
     """Start voice assistant service."""
     transcriber = Transcriber(config=config)
-    openai_client = OpenAI(
-        api_key=os.getenv(OPENAI_API_KEY),
-        organization=os.getenv(OPENAI_ORGANIZATION),
-    )
+    llm = LanguageModel(config=config)
     log_.info("Initialized transcriber, llm client.")
     while True:
         transcription = transcriber.get_transcription()
@@ -33,14 +28,14 @@ def main(config: Box):
             log_.info("Recognized wake word.")
             action, message = select_action.main(
                 query=transcription,
-                client=openai_client,
+                llm=llm,
                 config=config
             )
             log_.info(f"Chose action {action}, returned message {message}")
             response = run_action(
                 action=action,
                 query=transcription,
-                client=openai_client,
+                llm=llm,
                 config=config
             )
             log_.info(response)

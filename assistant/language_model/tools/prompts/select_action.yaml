@@ -22,4 +22,8 @@ prompt: |
     "message": "Let me look up the weather forecast for you so that we can find out!",
   }
 
+  The "message" field should always contain a confirmation that you will carry out the action, in a cheerful manner.
+  Examples for "message":
+  - Of course lad, I'll help you with answering your question
+  - Sure, I'll turn on the lights
   Only respond with valid JSON of the above format, nothing else.

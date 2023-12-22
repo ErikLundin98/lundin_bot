@@ -1,11 +1,9 @@
-import datetime
 from box import Box
 from queue import Queue
 import numpy as np
 import torch
 import whisper
 import time
-import os
 import speech_recognition as sr
 
 

@@ -6,8 +6,8 @@ get_weather:
   description: Get information about today's weather
   active: True
   number: 2
-toggle_light: 
-  description: Turn on or off a light in the home
+light_control: 
+  description: Adjust color or on/off status for a light source in the home.
   active: True
   number: 3
 answer_question: 

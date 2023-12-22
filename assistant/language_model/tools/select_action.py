@@ -1,7 +1,7 @@
 import json
-from assistant.language_model.utils import answer_prompt, load_prompt, render_prompt
+from assistant.language_model.model import LanguageModel
+from assistant.language_model.utils import load_prompt, render_prompt
 from assistant.language_model.action import Action
-from openai import OpenAI
 from box import Box
 
 NAME = "select_action"
@@ -9,7 +9,7 @@ ACTIONS = "actions"
 
 def main(
     query: str, 
-    client: OpenAI,
+    llm: LanguageModel,
     config: Box,
 ) -> tuple[Action, str]:
     """Select action."""
@@ -17,11 +17,10 @@ def main(
         prompt_name=NAME,
         actions = load_prompt(ACTIONS)
     )
-    answer = answer_prompt(
+    answer = llm.answer_prompt(
         system_prompt=system_prompt,
         user_prompt=query,
-        client=client,
-        model=config.language_model.model,
+        config=config,
     ).content
     try:
         answer_dict = json.loads(answer)

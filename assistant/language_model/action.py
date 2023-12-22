@@ -1,22 +1,21 @@
 from enum import Enum, auto
-from typing import Callable
 from box import Box
 
-from openai import OpenAI
-from assistant.language_model.tools import answer_question
+from assistant.language_model.model import LanguageModel
+from assistant.language_model.tools import answer_question, light_control
 
 class Action(Enum):
     """List of actions."""
     NO_ACTION = auto()
     GET_WEATHER = auto()
-    TOGGLE_LIGHT = auto()
+    LIGHT_CONTROL = auto()
     ANSWER_QUESTION = auto()
     TELL_JOKE = auto()
 
 def run_action(
     action: Action,
     query: str,
-    client: OpenAI,
+    llm: LanguageModel,
     config: Box,
 ) -> str:
     """Run action."""
@@ -25,12 +24,16 @@ def run_action(
             return "Sorry, I could not perform any action"
         case Action.GET_WEATHER.value:
             raise NotImplementedError()
-        case Action.TOGGLE_LIGHT.value: 
-            raise NotImplementedError()
+        case Action.LIGHT_CONTROL.value: 
+            return light_control.main(
+                query=query,
+                llm=llm,
+                config=config,
+            )
         case Action.ANSWER_QUESTION.value:
             return answer_question.main(
                 query=query,
-                client=client,
+                llm=llm,
                 config=config,
             )
         case Action.TELL_JOKE.value:

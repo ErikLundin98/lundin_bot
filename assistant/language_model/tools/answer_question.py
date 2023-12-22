@@ -1,24 +1,23 @@
 
-from assistant.language_model.utils import answer_prompt, render_prompt
-from openai import OpenAI
+from assistant.language_model.model import LanguageModel
+from assistant.language_model.utils import render_prompt
 from box import Box
 
 NAME = "answer_question"
 
 def main(
     query: str, 
-    client: OpenAI,
+    llm: LanguageModel,
     config: Box,
 ) -> str:
-    """Select action."""
+    """Answer random user question using LLM."""
     system_prompt = render_prompt(
         prompt_name=NAME,
     )
-    answer = answer_prompt(
+    answer = llm.answer_prompt(
         system_prompt=system_prompt,
         user_prompt=query,
-        client=client,
-        model=config.language_model.model,
+        config=config,
     ).content
     
     return answer
