@@ -15,12 +15,13 @@ install_mac:
 	brew install ffmpeg
 	make whisper_cpp
 	port install espeak-ng
+	brew install sox
 install_linux:
 	pip install -r requirements.txt
 	sudo apt update
 	sudo apt install ffmpeg
 	sudo apt install espeak-ng
-
+	sudo apt install aplay
 	make whisper_cpp
 
 whisper_cpp:

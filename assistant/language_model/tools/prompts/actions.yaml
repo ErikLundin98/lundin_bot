@@ -16,8 +16,3 @@ answer_question:
     no other action is appropriate
   active: True
   number: 4
-tell_joke:
-  description: |
-    Tell a funny joke
-  active: True
-  number: 5

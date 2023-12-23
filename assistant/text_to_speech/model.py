@@ -75,35 +75,43 @@ class TTS:
 
         return piper_bin_path, piper_model_path
     
+    def stream_audio(
+        self,
+        text: str,
+        config: Box
+    ) -> None:
+        """Stream to connected speakers."""
+        if "linux" in config.platform:
+            command = (
+                f"echo '{text}' | {self.piper_bin_path} "
+                f"--model '{self.piper_model_path}' "
+                f"--output_raw | aplay -r 22050 -f S16_LE -t raw -"
+            )
+        elif "mac" in config.platform:
+            command = (
+                f"echo '{text}' | {self.piper_bin_path} "
+                f"--model '{self.piper_model_path}' "
+                f"--output_raw | play -t raw -b 16 -e signed -r 22050 -"#play -r 22050 -e ms-adpcm -t raw -"
+            )
+
+        _log.info(command)
+        process = subprocess.Popen(
+            command, 
+            shell=True, 
+            stdout=subprocess.PIPE, 
+            stderr=subprocess.PIPE,
+        )
+        output, errors = process.communicate()
+        _log.info(output)
+        if errors:
+            _log.warning(errors)
+
     def create_wav(
         self,
         text: str,
         filename: str = "voice",
     ) -> None:
         """Create tts wav file and save to disk."""
-        # echo_process = subprocess.Popen(
-        #     ["echo", f"{text}", "|", "\\"], 
-        #     stdout=subprocess.PIPE, 
-        #     text=True,
-        # )
-        # piper_command = [
-        #     f"{self.piper_bin_path}",
-        #     f"--model \"{self.piper_model_path}\"",
-        #     f"--output_file {filename}.wav",
-        # ]
-        # _log.info(f"Executing command {' '.join(piper_command)}")
-        # piper_process = subprocess.Popen(
-        #     piper_command,
-        #     stdin=echo_process.stdout,
-        #     stdout=subprocess.PIPE,
-        #     text=True
-        # )
-        # echo_process.stdout.close()
-        # output, error = piper_process.communicate()
-        
-        # _log.info(output)
-        # _log.info(error)
-
         command = (
             f"echo '{text}' | {self.piper_bin_path} "
             f"--model '{self.piper_model_path}' "
@@ -128,7 +136,7 @@ if __name__ == "__main__":
 
     tts = TTS(config)
     
-    tts.create_wav(
+    tts.stream_audio(
         "Hej, äntligen fungerar det med text-till-tal via python och en massa hackning!",
-        "test"
+        config=config,
     )

@@ -8,6 +8,7 @@ from assistant.language_model.model import LanguageModel
 from assistant.language_model.tools import select_action
 from assistant.speech_to_text.model import Transcriber
 import logging
+from assistant.text_to_speech.model import TTS
 from assistant.utils import contains_wake_word
 
 log_ = logging.getLogger(__name__)
@@ -16,6 +17,7 @@ def main(config: Box):
     """Start voice assistant service."""
     transcriber = Transcriber(config=config)
     llm = LanguageModel(config=config)
+    tts = TTS(config=config)
     log_.info("Initialized transcriber, llm client.")
     for transcription in transcriber.start():
         if transcription:   
@@ -32,12 +34,14 @@ def main(config: Box):
                 config=config
             )
             log_.info(f"Chose action {action}, returned message {message}")
+            tts.stream_audio(text=message, config=config)
             response = run_action(
                 action=action,
                 query=transcription,
                 llm=llm,
                 config=config
             )
+            tts.stream_audio(text=response, config=config)
             log_.info(response)
 
 
@@ -50,5 +54,8 @@ if __name__ == "__main__":
         config = Box(yaml.safe_load(file))
     try:
         main(config=config)
+    except Exception as e:
+        log_.warning("Exception while running voice assistant:")
+        log_.warning(e)
     finally:
         os.killpg(pg_id, signal.SIGKILL)

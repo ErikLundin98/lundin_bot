@@ -10,7 +10,6 @@ class Action(Enum):
     GET_WEATHER = auto()
     LIGHT_CONTROL = auto()
     ANSWER_QUESTION = auto()
-    TELL_JOKE = auto()
 
 def run_action(
     action: Action,
@@ -36,5 +35,3 @@ def run_action(
                 llm=llm,
                 config=config,
             )
-        case Action.TELL_JOKE.value:
-            raise NotImplementedError()

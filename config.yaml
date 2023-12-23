@@ -19,7 +19,7 @@ speech_to_text:
     whisper_cpp:
         length: 15360
         capture_device: 0 # capture device ID. Change if using other
-        n_threads: 2 # threads to use
+        n_threads: 4 # threads to use
         audio_context_len: 512 # audio context size (0 - all)
         vad_thold: 0.3 # voice activity detection threshold
         file_path: ../data/transcription.txt # don't change this :)
@@ -41,9 +41,9 @@ text_to_speech:
     piper_voice:
         # You can find available voices at https://huggingface.co/rhasspy/piper-voices/tree/v1.0.0
         # Or you can create your own :)
-        model_file_name: sv_SE-nst-medium.onnx
-        weights_url: https://huggingface.co/rhasspy/piper-voices/resolve/v1.0.0/sv/sv_SE/nst/medium/sv_SE-nst-medium.onnx?download=true
-        config_url: https://huggingface.co/rhasspy/piper-voices/resolve/v1.0.0/sv/sv_SE/nst/medium/sv_SE-nst-medium.onnx.json?download=true
+        model_file_name: erkvoice-medium.onnx
+        weights_url: https://huggingface.co/snigelnmjau/erkvoice/resolve/main/model_22.onnx?download=true
+        config_url: https://huggingface.co/snigelnmjau/erkvoice/resolve/main/model_22.onnx.json?download=true
 
 smart_home:
     dirigera:
