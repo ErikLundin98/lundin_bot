@@ -42,8 +42,8 @@ text_to_speech:
         # You can find available voices at https://huggingface.co/rhasspy/piper-voices/tree/v1.0.0
         # Or you can create your own :)
         model_file_name: sv_SE-nst-medium.onnx
-        weights_url: https://huggingface.co/rhasspy/piper-voices/blob/v1.0.0/sv/sv_SE/nst/medium/sv_SE-nst-medium.onnx
-        config_url: https://huggingface.co/rhasspy/piper-voices/blob/v1.0.0/sv/sv_SE/nst/medium/sv_SE-nst-medium.onnx.json
+        weights_url: https://huggingface.co/rhasspy/piper-voices/resolve/v1.0.0/sv/sv_SE/nst/medium/sv_SE-nst-medium.onnx?download=true
+        config_url: https://huggingface.co/rhasspy/piper-voices/resolve/v1.0.0/sv/sv_SE/nst/medium/sv_SE-nst-medium.onnx.json?download=true
 
 smart_home:
     dirigera:

@@ -81,27 +81,45 @@ class TTS:
         filename: str = "voice",
     ) -> None:
         """Create tts wav file and save to disk."""
-        echo_process = subprocess.Popen(
-            ["echo", f"{text}"], 
-            stdout=subprocess.PIPE, 
-            text=True,
-        )
-        piper_command = [
-            f"{self.piper_bin_path}",
-            f"--model {self.piper_model_path}",
-            f"--output_file {filename}.wav",
-        ]
-        piper_process = subprocess.Popen(
-            piper_command,
-            stdin=echo_process.stdout,
-            stdout=subprocess.PIPE,
-            text=True
-        )
-
-        output, error = piper_process.communicate()
+        # echo_process = subprocess.Popen(
+        #     ["echo", f"{text}", "|", "\\"], 
+        #     stdout=subprocess.PIPE, 
+        #     text=True,
+        # )
+        # piper_command = [
+        #     f"{self.piper_bin_path}",
+        #     f"--model \"{self.piper_model_path}\"",
+        #     f"--output_file {filename}.wav",
+        # ]
+        # _log.info(f"Executing command {' '.join(piper_command)}")
+        # piper_process = subprocess.Popen(
+        #     piper_command,
+        #     stdin=echo_process.stdout,
+        #     stdout=subprocess.PIPE,
+        #     text=True
+        # )
+        # echo_process.stdout.close()
+        # output, error = piper_process.communicate()
         
+        # _log.info(output)
+        # _log.info(error)
+
+        command = (
+            f"echo '{text}' | {self.piper_bin_path} "
+            f"--model '{self.piper_model_path}' "
+            f"--output_file {filename}.wav"
+        )
+        _log.info(command)
+        process = subprocess.Popen(
+            command, 
+            shell=True, 
+            stdout=subprocess.PIPE, 
+            stderr=subprocess.PIPE,
+        )
+        output, errors = process.communicate()
         _log.info(output)
-        _log.info(error)
+        if errors:
+            _log.warning(errors)
 
 if __name__ == "__main__":
     import yaml
@@ -111,6 +129,6 @@ if __name__ == "__main__":
     tts = TTS(config)
     
     tts.create_wav(
-        "Hej, detta är Erik som pratar!",
+        "Hej, äntligen fungerar det med text-till-tal via python och en massa hackning!",
         "test"
     )
