@@ -2,6 +2,7 @@ openai
 python-dotenv
 python-box
 dirigera
+spotify
 
 
 pyaudio

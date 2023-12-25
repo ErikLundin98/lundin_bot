@@ -19,9 +19,20 @@ def main(config: Box):
     llm = LanguageModel(config=config)
     tts = TTS(config=config)
     log_.info("Initialized transcriber, llm client.")
-    for transcription in transcriber.start():
-        if transcription:   
-            log_.info(f"Got transcription {transcription}.")
+    try:
+        for transcription in transcriber.start():
+            handle_transcription(transcription=transcription, llm=llm, tts=tts)
+    except KeyboardInterrupt:
+        log_.info("Stopping assistant loop.")
+        raise KeyboardInterrupt()
+    except Exception as e:
+        log_.warning(f"An exception occurred when handling transcription: {e}")
+
+def handle_transcription(transcription:str, llm:LanguageModel, tts: TTS):
+    """Handle transcription."""
+
+    if transcription:   
+        log_.info(f"Got transcription {transcription}.")
         if transcription and contains_wake_word(
             sentence=transcription,
             wake_word=config.speech_to_text.wake_word,

@@ -16,3 +16,9 @@ answer_question:
     no other action is appropriate
   active: True
   number: 4
+
+music_control:
+  description: |
+    Control music and other audio media. Help with anything related to Music.
+  active: True
+  number: 5

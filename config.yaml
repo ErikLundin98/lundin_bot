@@ -11,17 +11,14 @@ language: swedish # Make sure this matches your tts model.
 speech_to_text:
     whisper_model: small
     wake_word: "Hej Erik"
-    # Deprecated
     similarity_score: 0.75
-    record_timeout: 5
-    energy_threshold: 300
 
     whisper_cpp:
-        length: 15360
+        length: 10000
         capture_device: 0 # capture device ID. Change if using other
         n_threads: 4 # threads to use
         audio_context_len: 512 # audio context size (0 - all)
-        vad_thold: 0.3 # voice activity detection threshold
+        vad_thold: 0.6 # voice activity detection threshold
         file_path: ../data/transcription.txt # don't change this :)
 
 language_model:
@@ -54,3 +51,5 @@ smart_home:
             - bedroom
             - living room
             - hallway
+
+    default_spotify_device: Denon CEOL piccolo

@@ -27,5 +27,5 @@ install_linux:
 whisper_cpp:
 	git submodule init && git submodule update
 	cd whisper.cpp && make -j stream
-	cd whisper.cpp && ./models/download-ggml-model.sh small
+	cd whisper.cpp && ./models/download-ggml-model.sh base
 

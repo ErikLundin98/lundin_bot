@@ -2,7 +2,7 @@ from enum import Enum, auto
 from box import Box
 
 from assistant.language_model.model import LanguageModel
-from assistant.language_model.tools import answer_question, light_control
+from assistant.language_model.tools import answer_question, light_control, music_control
 
 class Action(Enum):
     """List of actions."""
@@ -10,6 +10,7 @@ class Action(Enum):
     GET_WEATHER = auto()
     LIGHT_CONTROL = auto()
     ANSWER_QUESTION = auto()
+    MUSIC_CONTROL = auto()
 
 def run_action(
     action: Action,
@@ -31,6 +32,12 @@ def run_action(
             )
         case Action.ANSWER_QUESTION.value:
             return answer_question.main(
+                query=query,
+                llm=llm,
+                config=config,
+            )
+        case Action.MUSIC_CONTROL.value:
+            return music_control.main(
                 query=query,
                 llm=llm,
                 config=config,

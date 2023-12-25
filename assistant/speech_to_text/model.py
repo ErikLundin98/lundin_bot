@@ -13,19 +13,23 @@ class Transcriber:
     def __init__(self, config: Box):
         """Initialize Whisper CPP model."""
         cpp_config = config.speech_to_text.whisper_cpp
+        self.model = config.speech_to_text.whisper_model
         self.length = cpp_config.length
         self.capture_device = cpp_config.capture_device
         self.n_threads = cpp_config.n_threads
         self.audio_context_len = cpp_config.audio_context_len
         self.vad_thold = cpp_config.vad_thold
         self.file_path = cpp_config.file_path
+
         self.last_transcription = None
+
+
 
     def start(self) -> Generator[str | None, None, None]:
         """Start transcription in subprocess, return transcriptions as generator."""
         stream_cmd = [
             "./stream",
-            "-m", "models/ggml-small.bin",
+            "-m", f"models/ggml-{self.model}.bin",
             "--step", "0",
             "--language", "swedish",
             "--length", f"{self.length}",
