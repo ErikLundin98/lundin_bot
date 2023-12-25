@@ -20,5 +20,6 @@ answer_question:
 music_control:
   description: |
     Control music and other audio media. Help with anything related to Music.
+    Also for controlling music devices such as amplifiers.
   active: True
   number: 5

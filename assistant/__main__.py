@@ -21,12 +21,13 @@ def main(config: Box):
     log_.info("Initialized transcriber, llm client.")
     try:
         for transcription in transcriber.start():
-            handle_transcription(transcription=transcription, llm=llm, tts=tts)
+            try:
+                handle_transcription(transcription=transcription, llm=llm, tts=tts)
+            except Exception as e:
+                log_.warning(f"An exception occurred when handling transcription: {e}")
     except KeyboardInterrupt:
         log_.info("Stopping assistant loop.")
         raise KeyboardInterrupt()
-    except Exception as e:
-        log_.warning(f"An exception occurred when handling transcription: {e}")
 
 def handle_transcription(transcription:str, llm:LanguageModel, tts: TTS):
     """Handle transcription."""
@@ -45,7 +46,6 @@ def handle_transcription(transcription:str, llm:LanguageModel, tts: TTS):
                 config=config
             )
             log_.info(f"Chose action {action}, returned message {message}")
-            tts.stream_audio(text=message, config=config)
             response = run_action(
                 action=action,
                 query=transcription,

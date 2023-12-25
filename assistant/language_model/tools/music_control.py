@@ -97,7 +97,7 @@ def main(
         devices=devices,
         **answer_dict["args"],
     )
-    return response
+    return answer_dict["message"] + response
 
 
 def perform_music_action(
@@ -114,17 +114,15 @@ def perform_music_action(
     device_id = next(
         device for device in devices if device["name"].lower() == selected_device_name.lower()
     )["id"]
-    match action:
+    match action.lower():
         case MusicControlAction.TURN_ON_AMP.value:
             requests.get("http://192.168.0.100/goform/formiPhoneAppDirect.xml?PWON")
-            return "Amp turned on."
         case MusicControlAction.TURN_OFF_AMP.value:
             requests.get(
                 "http://192.168.0.100/goform/formiPhoneAppDirect.xml?PWSTANDBY"
             )
-            return "Amp turned off"
         case MusicControlAction.LIST_PLAYLISTS.value:
-            return "List of playlists: " + ", ".join(sp.current_user_playlists())
+            return ", ".join(sp.current_user_playlists())
         case MusicControlAction.PLAY.value:
             return play(
                 sp=sp,
@@ -134,27 +132,22 @@ def perform_music_action(
             )
         case MusicControlAction.PAUSE.value:
             sp.pause_playback(device_id=device_id)
-            return "Paused music"
         case MusicControlAction.RESUME.value:
             sp.start_playback(device_id=device_id)
-            return "Resumed music"
         case MusicControlAction.VOLUME.value:
             sp.volume(**kwargs)
-            return "Changed the volume"
         case MusicControlAction.HELP.value:
             actions = ", ".join(MusicControlAction.__members__)
-            return f"Here are the actions I can do for you: {actions}"
+            return f"{actions}"
         case MusicControlAction.LIST_DEVICES.value:
             return ", ".join([device["name"] for device in devices])
-        case _:
-            return "No action performed"
+        
+    return ""
 
 
 def play(sp: spotipy.Spotify, play_type: str, query: str, device_id: str):
     """Play any type of spotify media."""
     response = sp.search(query, type=play_type, limit=1)
-    if not response:
-        return "No results found"
     play_type_response = response.get(play_type + "s")
     first_item = play_type_response.get("items")[0]
     uri = first_item.get("uri")
@@ -165,7 +158,6 @@ def play(sp: spotipy.Spotify, play_type: str, query: str, device_id: str):
     else:
         songs = [uri]
     sp.start_playback(uris=songs, device_id=device_id)
-    return f"Sure king, now playing {first_item['name']}."
 
 
 # TODO make installation here easy for any device.

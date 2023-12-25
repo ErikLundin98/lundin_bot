@@ -47,7 +47,7 @@ def main(
         light_names=light_names,
     )
 
-    return ""
+    return answer_dict["message"]
 
 def perform_light_action(
     params: dict,

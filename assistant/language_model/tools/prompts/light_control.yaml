@@ -4,7 +4,8 @@ prompt: |
   {
     "name": "The device name",
     "color": "Color to set lamps to. Can be ignored if the user does not specify color",
-    "is_on": "Boolean describing if the light should be on or off. Can be ignored if not specified by user."
+    "is_on": "Boolean describing if the light should be on or off. Can be ignored if not specified by user.",
+    "message": "Message from you to the user"
   }
 
   Examples:
@@ -12,20 +13,23 @@ prompt: |
   Output: 
   {
     "name": "kitchen",
-    "is_on": false
+    "is_on": false,
+    "message": "I turned of the lamp in the kitchen"
   }
   Input: "Turn on the lamp in the kitchen and set color to red."
   Output: 
   {
     "name": "kitchen",
     "color": "red",
-    "is_on": true
+    "is_on": true,
+    "message": "I turned on the lamp in the kitchen and set its color to red."
   }
   Input: "Set color of kitchen to pink."
   Output: 
   {
     "name": "kitchen",
     "color": "pink",
+    "message": "I set the kitchen lamp's color to red."
   }
 
   The "name" field must be be one of the following: {{ light_names }}, it cannot be any other value
