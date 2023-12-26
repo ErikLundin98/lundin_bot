@@ -65,7 +65,8 @@ prompt: |
   {
     "action": "turn_off_amp",
     "args": {},
-    "message": "Sure, amp turned off"
+    "message": "Sure man, amp turned off"
   }
 
-  Remember: Always return valid json of the above format
+  remember that "play_type" can only accept the above specified alternatives. 
+  If the user asks for a specific genre, set the "play_type" field to "playlist"

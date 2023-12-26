@@ -3,7 +3,7 @@ prompt: |
   what settings the user want to apply to their smart light bulb. Output format:
   {
     "name": "The device name",
-    "color": "Color to set lamps to. Can be ignored if the user does not specify color",
+    "color": "Color to set lamps to, in hex. Can be ignored if the user does not specify color",
     "is_on": "Boolean describing if the light should be on or off. Can be ignored if not specified by user.",
     "message": "Message from you to the user"
   }
@@ -20,7 +20,7 @@ prompt: |
   Output: 
   {
     "name": "kitchen",
-    "color": "red",
+    "color": "#FF0000",
     "is_on": true,
     "message": "I turned on the lamp in the kitchen and set its color to red."
   }
@@ -28,10 +28,11 @@ prompt: |
   Output: 
   {
     "name": "kitchen",
-    "color": "pink",
+    "color": "#FFC0CB",
     "message": "I set the kitchen lamp's color to red."
   }
 
   The "name" field must be be one of the following: {{ light_names }}, it cannot be any other value
-  The "color" field must be one the following: {{ colors }}
   Only respond with valid json, nothing else.
+
+  The message field should be expressed in a clever and funny way. Demonstrate your intelligence by including puns in the message.

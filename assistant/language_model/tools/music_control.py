@@ -14,6 +14,7 @@ from assistant.language_model.utils import render_prompt
 _log = logging.getLogger(__name__)
 
 from assistant.constants import (
+    AMPLIFIER_IP,
     SPOTIFY_CLIENT_ID,
     SPOTIFY_CLIENT_SECRET,
     SPOTIFY_REDIRECT_URL,
@@ -38,6 +39,7 @@ class MusicControlAction(Enum):
 class PlayType(Enum):
     TRACK = "track"
     ALBUM = "album"
+    ARTIST = "artist"
     PLAYLIST = "playlist"
     SHOW = "show"
     EPISODE = "episode"
@@ -116,15 +118,15 @@ def perform_music_action(
     )["id"]
     match action.lower():
         case MusicControlAction.TURN_ON_AMP.value:
-            requests.get("http://192.168.0.100/goform/formiPhoneAppDirect.xml?PWON")
+            requests.get(f"http://{os.getenv(AMPLIFIER_IP)}/goform/formiPhoneAppDirect.xml?PWON")
         case MusicControlAction.TURN_OFF_AMP.value:
             requests.get(
-                "http://192.168.0.100/goform/formiPhoneAppDirect.xml?PWSTANDBY"
+                f"http://{os.getenv(AMPLIFIER_IP)}/goform/formiPhoneAppDirect.xml?PWSTANDBY"
             )
         case MusicControlAction.LIST_PLAYLISTS.value:
             return ", ".join(sp.current_user_playlists())
         case MusicControlAction.PLAY.value:
-            return play(
+            play(
                 sp=sp,
                 play_type=kwargs.get("play_type"),
                 query=kwargs.get("query"),
@@ -155,6 +157,9 @@ def play(sp: spotipy.Spotify, play_type: str, query: str, device_id: str):
         songs = [track["uri"] for track in sp.album(uri)["tracks"]["items"]]
     elif play_type == PlayType.PLAYLIST.value:
         songs = [track["track"]["uri"] for track in sp.playlist(uri)["tracks"]["items"]]
+    elif play_type == PlayType.ARTIST.value:
+        
+        songs = [track["uri"] for track in sp.artist_top_tracks(uri)["tracks"]]
     else:
         songs = [uri]
     sp.start_playback(uris=songs, device_id=device_id)

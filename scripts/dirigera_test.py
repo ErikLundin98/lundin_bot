@@ -24,6 +24,7 @@ def get_lights_matching_name(hub: dirigera.Hub, name: str) -> list[Light]:
 
 
 lights = get_lights_matching_name(hub, "hallway")
-
 for light in lights:
-    light.set_light(lamp_on=True)
+    # light.set_light(lamp_on=True)
+    print(light)
+    light.set_color_temperature(2702)

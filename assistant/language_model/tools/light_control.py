@@ -9,6 +9,7 @@ import dirigera
 from dirigera.devices.light import Light
 import logging
 import difflib
+import colorutils
 
 _log = logging.getLogger(__name__)
 NAME = "light_control"
@@ -23,7 +24,6 @@ def main(
     system_prompt = render_prompt(
         prompt_name=NAME,
         light_names=", ".join(light_names),
-        colors=", ".join([]) # TODO
     )
     answer = llm.answer_prompt(
         system_prompt=system_prompt,
@@ -65,12 +65,16 @@ def perform_light_action(
     )
     for light in lights:
         if "color" in params:
-            ...
+            color_hex = params["color"]
+            set_light_color(
+                light=light,
+                color_hex=color_hex,
+            )
         if "is_on" in params:
             light.set_light(lamp_on=params["is_on"])
 
 def get_lights_matching_name(hub: dirigera.Hub, name: str) -> list[Light]:
-    """Get all lights in room"""
+    """Get all lights in room."""
     name = name.lower()
     return [
         light for light in hub.get_lights()
@@ -78,3 +82,13 @@ def get_lights_matching_name(hub: dirigera.Hub, name: str) -> list[Light]:
         or any(device_set["name"].lower() == name for device_set in light.device_set)
         or light.attributes.custom_name.lower() == name
     ]
+
+def set_light_color(
+    light: Light,
+    color_hex: str,
+):
+    """Set light color."""
+    hue, saturation, _ = colorutils.hex_to_hsv(color_hex)
+    light.set_light_color(
+        hue, saturation
+    )
