@@ -13,12 +13,14 @@ class LanguageModel:
             organization=os.getenv(OPENAI_ORGANIZATION),
         )
         self.history: list[dict] = [] # Not used yet :)
+        self.extra_instructions = config.language_model.extra_instructions
+        self.model = config.language_model.model
     
     def answer_prompt(
         self,
         system_prompt: str | None,
         user_prompt: str,
-        config: Box,
+        use_extra_instructions: bool = True,
     ) -> ChatCompletionMessage:
         """Answer prompt."""
 
@@ -26,9 +28,11 @@ class LanguageModel:
             system_prompt 
             if system_prompt
             else "You are a helpful assistant."
-        ) + " " + config.language_model.extra_instructions
+        )
+        if use_extra_instructions:
+            system_prompt += " " + self.extra_instructions
         completion = self.client.chat.completions.create(
-            model=config.language_model.model,
+            model=self.model,
             messages=[
                 {
                     "role": "system",

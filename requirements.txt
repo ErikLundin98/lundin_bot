@@ -5,6 +5,8 @@ dirigera
 spotipy
 
 
-pyaudio
-SpeechRecognition # TODO: Might not be necessary
+SpeechRecognition
 numpy
+pandas
+tabulate
+duckdb

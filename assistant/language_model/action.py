@@ -34,7 +34,6 @@ def run_action(
             return answer_question.main(
                 query=query,
                 llm=llm,
-                config=config,
             )
         case Action.MUSIC_CONTROL.value:
             return music_control.main(

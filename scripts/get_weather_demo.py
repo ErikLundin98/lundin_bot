@@ -1,9 +1,14 @@
 import os
 from typing import Any
+from box import Box
 from dotenv import load_dotenv
+import yaml
 from assistant.constants import HOME_LAT, HOME_LON
 import requests
 import pandas as pd
+import datetime
+
+from assistant.language_model.model import LanguageModel
 
 load_dotenv()
 
@@ -26,27 +31,19 @@ for entry in time_series:
 
 df = pd.DataFrame(data)
 df["values"] = df["values"].apply(lambda value_list: value_list[0])
-
 name_mapping = {
-    "spp": "Percent of precipitation in frozen form",  # -9 if none
-    "pcat": "Precipitation category",
-    "pmin": "Minimum precipitation intensity",
-    "pmean": "Mean precipitation intensity",
-    "pmax": "Maximum precipitation intensity",
-    "pmedian": "Median precipitation intensity",
-    "tcc_mean": "Mean cloud coverage",
-    "lcc_mean": "Mean value of low level cloud cover",
-    "mcc_mean": "Mean value of medium level cloud cover",
-    "hcc_mean": "Mean value of high level cloud cover",
-    "t": "Air temperature",
-    "msl": "Air pressure",
-    "vis": "Horizontal visibility",
-    "wd": "Wind direction",
-    "ws": "Wind speed",
-    "r": "Relative humidity",
-    "tstm": "Thunder probability",
-    "gust": "Wind gust speed",
-    "Wsymb2": "Weather symbol",
+    "spp": "percent_frozen_precipitation",  # -9 if none
+    "pcat": "precipitation_type",
+    "pmean": "mean_precipitation",
+    "tcc_mean": "mean_cloud_coverage",
+    "t": "temperature_celsius",
+    "msl": "air_pressure",
+    "vis": "horizontal_visiblity",
+    "ws": "wind_speed_meters_per_second",
+    "r": "relative_humidity_percent",
+    "tstm": "thunder_probability",
+    "gust": "wind_gust_speed_meters_per_second",
+    "Wsymb2": "weather_symbol",
 }
 PRECIPITATION_CATEGORIES = {
     0: "No precipitation",
@@ -87,6 +84,8 @@ WEATHER_SYMBOLS = {
     26:	"Moderate snowfall",
     27:	"Heavy snowfall",
 }
+
+df = df[~df.name.isin(["lcc_mean", "mcc_mean", "hcc_mean", "wd", "pmax", "pmin", "pmedian"])]
 def map_value(name: str, value: Any) -> Any:
     """Map values to something more sensible based on name."""
     match name:
@@ -137,6 +136,68 @@ df["values"] = df[["name", "values"]].apply(
     axis=1,
 )
 df["name"] = df["name"].apply(lambda name: name_mapping[name])
-df["name"] = df["name"] + " (" + df["unit"] + ")"
-df = df.pivot(index="time", columns="name", values="values")
-print(df)
+weather = df.pivot(index="time", columns="name", values="values").reset_index()
+datetimes = pd.to_datetime(weather["time"])
+weather["date"] = datetimes.dt.date
+weather["time"] = datetimes.dt.time
+
+
+with open("config.yaml", "r") as file:
+    config = Box(yaml.safe_load(file))
+
+llm = LanguageModel(config)
+
+system_prompt = f"""
+You are a weather analyst who should formulate a weather sql query to answer the user's question. You have the following table
+called "weather" at your disposal. Here is a sample of the table:
+
+{weather.head()}
+
+The column "precipitation_type" can be one of {", ".join(list(PRECIPITATION_CATEGORIES.values()))}
+
+Note: When the user simply asks for the weather, it's most interesting to look at
+* Temperature during the day
+* If it will rain/snow/be clear
+* Wind velocity
+Your response should be a valid SQL query that can be used to fetch the data that answers the user's question.
+No other columns than {weather.columns} are allowed.
+The current date is {datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+The forecast contains data for timestamps up until {weather.index.max()}
+
+The SQL syntax should be supported by DuckDB. The only scalar functions you are allowed to use in the query are
+ aggregate functions.
+Only respond with a SQL query, nothing else.
+"""
+import duckdb
+user_prompt = "Kan du beskriva dagens vädret i detalj för mig"
+query = llm.answer_prompt(
+    system_prompt=system_prompt,
+    user_prompt=user_prompt,
+    use_extra_instructions=False,
+).content.replace("\n", " ")
+
+print(query)
+
+result = duckdb.query_df(df=weather, virtual_table_name="weather", sql_query=query).to_df()
+
+
+system_prompt_with_table = f"""
+You are a weather expert who should answer the user's question related to the weather in an easy 
+to understand manner. You should use puns related to weather in your answer. 
+You have the following data available to answer the question:
+
+{result}
+
+Answer the question in a short summary. 
+If the result set is empty, it means thatyou cannot give a proper answer to the question
+"""
+
+answer = llm.answer_prompt(
+    system_prompt=system_prompt_with_table,
+    user_prompt=user_prompt,
+).content
+
+print(user_prompt)
+
+print(result)
+print(answer)

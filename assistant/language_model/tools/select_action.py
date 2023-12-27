@@ -20,7 +20,6 @@ def main(
     answer = llm.answer_prompt(
         system_prompt=system_prompt,
         user_prompt=query,
-        config=config,
     ).content
     try:
         answer_dict = json.loads(answer)
