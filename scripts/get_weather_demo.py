@@ -159,6 +159,7 @@ Note: When the user simply asks for the weather, it's most interesting to look a
 * Temperature during the day
 * If it will rain/snow/be clear
 * Wind velocity
+* Cloudiness
 Your response should be a valid SQL query that can be used to fetch the data that answers the user's question.
 No other columns than {weather.columns} are allowed.
 The current date is {datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
@@ -169,7 +170,7 @@ The SQL syntax should be supported by DuckDB. The only scalar functions you are 
 Only respond with a SQL query, nothing else.
 """
 import duckdb
-user_prompt = "Kan du beskriva dagens vädret i detalj för mig"
+user_prompt = "Kan du beskriva dagens väder i detalj för mig"
 query = llm.answer_prompt(
     system_prompt=system_prompt,
     user_prompt=user_prompt,
