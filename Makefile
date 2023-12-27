@@ -13,9 +13,9 @@ install_mac:
 	pip install -r requirements.txt
 	brew update 
 	brew install ffmpeg
-	make whisper_cpp
 	port install espeak-ng
 	brew install sox
+	make whisper_cpp
 install_linux:
 	pip install -r requirements.txt
 	sudo apt update

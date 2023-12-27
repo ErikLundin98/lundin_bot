@@ -91,7 +91,7 @@ class TTS:
             command = (
                 f"echo '{text}' | {self.piper_bin_path} "
                 f"--model '{self.piper_model_path}' "
-                f"--output_raw | play -t raw -b 16 -e signed -r 22050 -"#play -r 22050 -e ms-adpcm -t raw -"
+                f"--output_raw | play -t raw -b 16 -e signed -r 22050 -"
             )
 
         _log.info(command)

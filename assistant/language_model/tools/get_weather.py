@@ -74,13 +74,14 @@ def main(
 ) -> str:
     """Get weather info"""
     weather = get_weather_data()
+    current_datetime = current_datetime=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     query_prompt = render_prompt(
         prompt_name=NAME,
         prompt_key="query",
         data_sample=weather.head(),
         precipitation_categories=list(PRECIPITATION_CATEGORIES.values()),
         columns=weather.columns,
-        current_datetime=datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        current_datetime=current_datetime,
         max_datetime=str(weather["date"].max()) + " " + str(weather["time"].max()),
     )
     query = llm.answer_prompt(
@@ -96,7 +97,8 @@ def main(
     weather_prompt = render_prompt(
         prompt_name=NAME,
         weather_data=result,
-        query_used=query
+        query_used=query,
+        current_datetime=current_datetime,
     )
     answer = llm.answer_prompt(
         system_prompt=weather_prompt,

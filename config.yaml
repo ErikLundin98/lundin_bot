@@ -1,4 +1,4 @@
-platform: mac_amd
+platform: mac_arm
 # Choose platform in the following way:
 # If using M1 or M2 or M* Mac: mac_arm
 # If using mac with intel or amd cpu: mac_amd
@@ -11,7 +11,7 @@ language: swedish # Make sure this matches your tts model.
 speech_to_text:
     whisper_model: small
     wake_word: "Hej Erik"
-    similarity_score: 0.75
+    similarity_score: 0.75 # Determines how close wake word needs to be to your word.
 
     whisper_cpp:
         length: 10000
@@ -26,10 +26,10 @@ language_model:
     extra_instructions: Always answer in Swedish.
 
 text_to_speech:
-    binary_path: bin # local path to where piper is downloaded
+    binary_path: bin # relative path to where piper is installed
     piper_tts_release_url: https://github.com/rhasspy/piper/releases/download/2023.11.14-2/
     binary_download_files:
-        mac_arm: piper_macos_aarch64.tar.gz # If using amd64 cpu on mac, change this
+        mac_arm: piper_macos_x64.tar.gz # If using amd64 cpu on mac, change this
         mac_amd: piper_macos_x64.tar.gz
         linux_arm32: piper_linux_armv7l.tar.gz
         linux_arm64: piper_linux_aarch64.tar.gz

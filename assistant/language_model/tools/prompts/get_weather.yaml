@@ -32,6 +32,7 @@ prompt: |
 
   {{ weather_data }}
 
+  The current date and time is {{ current_datetime }}
   If the user simply asks about the weather, they are most likely just interested in the following:
   * Temperature during the day (the number)
   * If it will rain/snow/be clear
