@@ -1,4 +1,4 @@
-platform: mac_arm
+platform: linux_arm64
 # Choose platform in the following way:
 # If using M1 or M2 or M* Mac: mac_arm
 # If using mac with intel or amd cpu: mac_amd
@@ -16,7 +16,7 @@ speech_to_text:
     whisper_cpp:
         length: 10000
         capture_device: 0 # capture device ID. Change if using other
-        n_threads: 4 # threads to use
+        n_threads: 3 # threads to use
         audio_context_len: 512 # audio context size (0 - all)
         vad_thold: 0.6 # voice activity detection threshold
         file_path: ../data/transcription.txt # don't change this :)
@@ -44,12 +44,7 @@ text_to_speech:
 
 smart_home:
     dirigera:
-        rooms:
-            - entrance
-            - office
-            - kitchen
-            - bedroom
-            - living room
-            - hallway
+        rooms: ["hall", "sovrum", "kök", "vardagsrum"]
+# Possible to list names of both rooms and individual lights here. TODO separate
 
     default_spotify_device: Denon CEOL piccolo

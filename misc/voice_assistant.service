@@ -1,0 +1,14 @@
+[Unit]
+Description=Open Source Voice Assistant
+After=multi-user.target
+
+[Service]
+Type=simple
+Restart=always
+# Alter below line to fit your needs
+WorkingDirectory=/home/erik/lundin_bot/ 
+ExecStart=/home/erik/lundin_bot/venv/bin/python -m assistant
+
+[Install]
+WantedBy=multi-user.target
+

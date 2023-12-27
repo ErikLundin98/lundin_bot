@@ -3,8 +3,9 @@ python-dotenv
 python-box
 dirigera
 spotipy
-
-
+pyyaml
+colorutils
+jinja2
 SpeechRecognition
 numpy
 pandas
