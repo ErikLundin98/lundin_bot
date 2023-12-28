@@ -21,6 +21,9 @@ Current capabilities are:
 ## TODO
 
 * Improve installation
+  * Add installation scripts to
+    * List spotify devices
+    * List dirigera devices
 * Fix enabling/disabling of actions
 * Add memory + conversational capabilities
 * Trim performance for raspberry pi (config params)
