@@ -21,7 +21,6 @@ Current capabilities are:
 ## TODO
 
 * Improve installation
-* Make sure works on linux
 * Fix enabling/disabling of actions
 * Add memory + conversational capabilities
 * Trim performance for raspberry pi (config params)
@@ -80,6 +79,8 @@ When this is done, simply run
 ```python3
 python -m assistant
 ```
+
+The first time you run the bot and enter the music service, you will need to authenticate against your spotify app. Simply follow the instructions in the terminal. This step is only required the first time you run the assistant on a new device.
 
 **NOTE**: If running on an M1 mac, after running the model for the first time, the TTS module might crash due to missing dependencies. If this happens, there is a patch available which can be run by running
 ```bash
