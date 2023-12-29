@@ -7,6 +7,9 @@ A simple voice assistant bot built for running on a Raspberry Pi 4 or above usin
 * [ChatGPT](https://github.com/openai/openai-python) for doing as the user wishes
 * [Piper](https://github.com/rhasspy/piper) for text-to-speech.
   * I have trained the Piper TTS (VITS based) model on my own voice. By default, this is the voice used for the assistant.
+  * To train your own voice, rhasspy has a bunch of great repos that you can use
+    * There's a training guide in the [Piper repo](https://github.com/rhasspy/piper)
+    * You can create your own dataset using [Piper recording studio](https://github.com/rhasspy/piper-recording-studio)
 
 This is a hobby project intended for personal use.
 You are welcome to use the project for your own purposes as well.

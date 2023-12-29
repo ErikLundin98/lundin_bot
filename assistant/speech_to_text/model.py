@@ -38,8 +38,6 @@ class Transcriber:
             "--audio-ctx", f"{self.audio_context_len}", 
             "--vad-thold", f"{self.vad_thold}",
             "--file", f"{self.file_path}", # TODO remove?
-            "--save-audio",
-            # "--keep", '0'
         ]
         _log.info(f"Running command {' '.join(stream_cmd)}")
 
