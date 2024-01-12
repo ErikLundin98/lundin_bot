@@ -20,8 +20,6 @@ def run_action(
 ) -> str:
     """Run action."""
     match action:
-        case Action.NO_ACTION.value:
-            return "Sorry, I could not perform any action"
         case Action.GET_WEATHER.value:
             return get_weather.main(
                 query=query,

@@ -1,7 +1,3 @@
-no_action: 
-  description: Null action, should never be selected.
-  active: True
-  number: 1
 get_weather: 
   description: Get information about today's weather
   active: True

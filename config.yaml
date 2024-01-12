@@ -1,4 +1,4 @@
-platform: linux_arm64
+platform: mac_arm
 # Choose platform in the following way:
 # If using M1 or M2 or M* Mac: mac_arm
 # If using mac with intel or amd cpu: mac_amd
@@ -10,7 +10,7 @@ language: swedish # Make sure this matches your tts model.
 
 speech_to_text:
     whisper_model: small
-    wake_word: "Hej Erik"
+    wake_word: "Erik"
     similarity_score: 0.75 # Determines how close wake word needs to be to your word.
 
     whisper_cpp:

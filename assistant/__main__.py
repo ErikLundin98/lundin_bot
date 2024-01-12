@@ -46,6 +46,7 @@ def handle_transcription(transcription:str, llm:LanguageModel, tts: TTS):
                 config=config
             )
             log_.info(f"Chose action {action}, returned message {message}")
+            tts.stream_audio(text=message, config=config)
             response = run_action(
                 action=action,
                 query=transcription,
