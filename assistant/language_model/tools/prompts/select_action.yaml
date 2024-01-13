@@ -27,3 +27,4 @@ prompt: |
   - Of course lad, I'll help you with answering your question
   - Sure, I'll turn on the lights
   Only respond with valid JSON of the above format, nothing else.
+  The "message" should be in future tense, indicating that you will carry out the action

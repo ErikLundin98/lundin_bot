@@ -10,6 +10,7 @@ from assistant.speech_to_text.model import Transcriber
 import logging
 from assistant.text_to_speech.model import TTS
 from assistant.utils import contains_wake_word
+import traceback
 
 log_ = logging.getLogger(__name__)
 
@@ -24,7 +25,9 @@ def main(config: Box):
             try:
                 handle_transcription(transcription=transcription, llm=llm, tts=tts)
             except Exception as e:
-                log_.warning(f"An exception occurred when handling transcription: {e}")
+                log_.warning("Something went wrong!")
+                log_.warning(traceback.format_exc())
+                tts.stream_audio(text=config.error_message, config=config)
     except KeyboardInterrupt:
         log_.info("Stopping assistant loop.")
         raise KeyboardInterrupt()
@@ -32,7 +35,7 @@ def main(config: Box):
 def handle_transcription(transcription:str, llm:LanguageModel, tts: TTS):
     """Handle transcription."""
 
-    if transcription:   
+    if transcription:
         log_.info(f"Got transcription {transcription}.")
         if transcription and contains_wake_word(
             sentence=transcription,

@@ -1,4 +1,4 @@
-platform: mac_arm
+platform: linux_arm64
 # Choose platform in the following way:
 # If using M1 or M2 or M* Mac: mac_arm
 # If using mac with intel or amd cpu: mac_amd
@@ -7,6 +7,8 @@ platform: mac_arm
 # If using linux with intel or amd cpu: linux_amd
 # If using windows: Currently not supported.
 language: swedish # Make sure this matches your tts model.
+
+error_message: "Hoppsan, där gick något fel."
 
 speech_to_text:
     whisper_model: small

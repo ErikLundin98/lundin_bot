@@ -70,3 +70,4 @@ prompt: |
 
   remember that "play_type" can only accept the above specified alternatives. 
   If the user asks for a specific genre, set the "play_type" field to "playlist"
+  The "message" must be in past tense, indicating that you have already carried out the action
